@@ -4,24 +4,9 @@
       <a routerLink="/" class="sitetitle">NgExchange</a>
     </h1>
     <div class="expander"></div>
-    <div class="menu">
-      <nav class="navigation">
-        <a mat-button routerLink="/" routerLinkActive="mat-accent"
-          >Latest rates</a
-        >
-        <a mat-button routerLink="/historic" routerLinkActive="mat-accent"
-          >Historic chart</a
-        >
-        <a mat-button routerLink="/comparsion" routerLinkActive="mat-accent"
-          >Compare growth</a
-        >
-      </nav>
-      <button mat-button [matMenuTriggerFor]="baseSelector">Base (USD)</button>
-      <mat-menu #baseSelector="matMenu">
-        <button mat-menu-item>USD</button>
-        <button mat-menu-item>EUR</button>
-        <button mat-menu-item>GBP</button>
-      </mat-menu>
-    </div>
+    <app-main-navigation></app-main-navigation>
   </mat-toolbar-row>
 </mat-toolbar>
+<main>
+  <router-outlet></router-outlet>
+</main>

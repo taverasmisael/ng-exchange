@@ -1,0 +1,23 @@
+<div class="menu">
+  <nav class="navigation">
+    <a
+      mat-button
+      routerLink="/"
+      routerLinkActive="mat-accent"
+      [routerLinkActiveOptions]="{ exact: true }"
+      >Latest rates</a
+    >
+    <a mat-button routerLink="/historic" routerLinkActive="mat-accent"
+      >Historic chart</a
+    >
+    <a mat-button routerLink="/comparison" routerLinkActive="mat-accent"
+      >Compare growth</a
+    >
+  </nav>
+  <button mat-button [matMenuTriggerFor]="baseSelector">Base (USD)</button>
+  <mat-menu #baseSelector="matMenu">
+    <button mat-menu-item>USD</button>
+    <button mat-menu-item>EUR</button>
+    <button mat-menu-item>GBP</button>
+  </mat-menu>
+</div>
