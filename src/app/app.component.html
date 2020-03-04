@@ -1,1 +1,19 @@
-<div>HOLA {{ title }}</div>
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <h1>
+      <a routerLink="/" class="sitetitle">NgExchange</a>
+    </h1>
+    <div class="expander"></div>
+    <nav>
+      <a mat-button routerLink="/" routerLinkActive="mat-accent"
+        >Latest rates</a
+      >
+      <a mat-button routerLink="/historic" routerLinkActive="mat-accent"
+        >Historic chart</a
+      >
+      <a mat-button routerLink="/comparsion" routerLinkActive="mat-accent"
+        >Compare growth</a
+      >
+    </nav>
+  </mat-toolbar-row>
+</mat-toolbar>
