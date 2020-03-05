@@ -1,5 +1,6 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
+import { HttpClientModule } from "@angular/common/http";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -20,6 +21,7 @@ import { ComparisonPageComponent } from "./views/comparison-page/comparison-page
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     NoopAnimationsModule,
     MaterialDesignModule
