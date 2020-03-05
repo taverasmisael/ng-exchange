@@ -35,19 +35,18 @@ export class LatestPageComponent implements OnInit, OnDestroy {
     this.lastRates$ = this.exchangeService
       .getLastDays(today)
       .pipe(map(this.mapRatesToTable))
-      .subscribe(this.initializeDataTable, this.handleAPIError);
+      .subscribe((rates: MappedRates[]) => {
+        console.log(this.sort);
+        this.requestStatus = RequestStatus.SUCCESS;
+        this.rates = new MatTableDataSource(rates);
+        this.rates.paginator = this.paginator;
+        this.rates.sort = this.sort;
+      }, this.handleAPIError);
   }
 
   ngOnDestroy(): void {
     this.lastRates$.unsubscribe();
   }
-
-  private initializeDataTable = (rates: MappedRates[]) => {
-    this.requestStatus = RequestStatus.SUCCESS;
-    this.rates = new MatTableDataSource(rates);
-    this.rates.paginator = this.paginator;
-    this.rates.sort = this.sort;
-  };
 
   private mapRatesToTable(rates: ExchangeLatestRates): MappedRates[] {
     return Object.keys(rates.today).map(symbol => ({

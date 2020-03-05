@@ -1,6 +1,6 @@
 <div class="container">
   <h1 class="mat-display-1">Latest rates</h1>
-  <div class="content" *ngIf="requestStatus == 'SUCCESS'">
+  <div class="content" [hidden]="requestStatus !== 'SUCCESS'">
     <table matSort mat-table [dataSource]="rates" class="mat-elevation-z4">
       <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
@@ -50,8 +50,6 @@
       showFirstLastButtons
     ></mat-paginator>
   </div>
-  {{ requestStatus }}
-  {{ errorMessage }}
   <div class="content" *ngIf="requestStatus === 'LOADING'">
     <p class="mat-headline">Loading rates...</p>
   </div>
