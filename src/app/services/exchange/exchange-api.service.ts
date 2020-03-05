@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
-import { map } from "rxjs/operators";
+import { of as observableOf, Observable } from "rxjs";
+import { switchMap } from "rxjs/operators";
 
 import { prevDays } from "../../helpers/date";
-import {
-  ExchangeLatestResponse,
-  ExchangeHistoricResponse
-} from "./models/exchange-response";
+import { ExchangeBaseResponse } from "./models/exchange-response";
+import { ExchangeHistoricRate } from "./models/exchange-historic-rate";
+import { ExchangeRate } from "./models/exchange-rate";
 
 @Injectable({
   providedIn: "root"
@@ -22,18 +22,18 @@ export class ExchangeAPIService {
     return "https://api.exchangeratesapi.io/";
   }
 
-  private getHistoric(start: string, end: string, base = this.DEFAULT_BASE) {
+  getHistoric(start: string, end: string, base = this.DEFAULT_BASE) {
     return this.http
       .get(
         `${this.BASE_URL}history?start_at=${start}&end_at=${end}&base=${base}`
       )
-      .pipe(map((res: ExchangeHistoricResponse) => res.rates));
+      .pipe(switchMap(this.mapRates)) as Observable<ExchangeHistoricRate>;
   }
 
   getLatest(base = this.DEFAULT_BASE) {
     return this.http
       .get(`${this.BASE_URL}latest?base=${base}`)
-      .pipe(map((res: ExchangeLatestResponse) => res.rates));
+      .pipe(switchMap(this.mapRates)) as Observable<ExchangeRate>;
   }
 
   getLastMonth(end: string, base = this.DEFAULT_BASE) {
@@ -47,13 +47,20 @@ export class ExchangeAPIService {
     const start = prevDays(end, 7);
 
     return this.getHistoric(start, end, base).pipe(
-      map(rates => {
+      switchMap(rates => {
         const [today, yesterday] = Object.keys(rates)
           .sort()
           .reverse();
 
-        return { today: rates[today], yesterday: rates[yesterday] };
+        return observableOf({
+          today: rates[today],
+          yesterday: rates[yesterday]
+        });
       })
     );
+  }
+
+  private mapRates<T extends ExchangeBaseResponse>(res: T) {
+    return observableOf(res.rates);
   }
 }

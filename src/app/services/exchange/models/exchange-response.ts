@@ -1,7 +1,7 @@
 import { ExchangeRate } from "./exchange-rate";
 import { ExchangeHistoricRate } from "./exchange-historic-rate";
 
-interface ExchangeBaseResponse {
+export interface ExchangeBaseResponse {
   rates: ExchangeRate | ExchangeHistoricRate;
   base: string;
   date: string;
