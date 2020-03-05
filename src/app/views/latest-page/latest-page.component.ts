@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
 
-import { Observable } from "rxjs";
+import { Subscription } from "rxjs";
 
 import { toISODate } from "src/app/helpers/date";
 import { ExchangeAPIService } from "src/app/services/exchange/exchange-api.service";
@@ -10,17 +10,19 @@ import { map } from "rxjs/operators";
 import { RateFluctuationEntry } from "src/app/models/rate-fluctuation-entry";
 import { calculateFluctuation } from "src/app/helpers/fluctuation";
 import { MatPaginator } from "@angular/material/paginator";
+import { MatSort } from "@angular/material/sort";
 
 @Component({
   selector: "app-latest-page",
   templateUrl: "./latest-page.component.html",
   styleUrls: ["./latest-page.component.scss"]
 })
-export class LatestPageComponent implements OnInit {
-  private lastRates$: Observable<Array<RateFluctuationEntry>>;
+export class LatestPageComponent implements OnInit, OnDestroy {
+  private lastRates$: Subscription;
   rates: MatTableDataSource<RateFluctuationEntry>;
-  displayedColumns = ["position", "symbol", "spot", "chart"];
+  displayedColumns = ["fluctuation", "symbol", "spot", "chart"];
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(private exchangeService: ExchangeAPIService) {}
 
@@ -28,16 +30,20 @@ export class LatestPageComponent implements OnInit {
     const today = toISODate(new Date());
     this.lastRates$ = this.exchangeService
       .getLastDays(today)
-      .pipe(map(this.mapRatesToTable));
-    this.lastRates$.subscribe(rates => {
-      this.rates = new MatTableDataSource(rates);
-      this.rates.paginator = this.paginator;
-    });
+      .pipe(map(this.mapRatesToTable))
+      .subscribe(rates => {
+        this.rates = new MatTableDataSource(rates);
+        this.rates.paginator = this.paginator;
+        this.rates.sort = this.sort;
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.lastRates$.unsubscribe();
   }
 
   private mapRatesToTable(rates: ExchangeLatestRates) {
     const symbols = Object.keys(rates.today);
-    console.warn(this);
     return symbols.map(symbol => ({
       symbol,
       spot: rates.today[symbol],

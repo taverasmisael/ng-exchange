@@ -1,5 +1,5 @@
 export enum RateFluctuation {
-  UP = "UP",
-  DOWN = "DOWN",
-  SAME = "SAME"
+  UP = 1,
+  DOWN = -1,
+  SAME = 0
 }

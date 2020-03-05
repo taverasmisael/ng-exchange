@@ -1,4 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.text-center,
+.mat-header-cell.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+
+  &.mat-header-cell {
+    .mat-sort-header-container {
+      justify-content: flex-end;
+    }
+  }
+}
