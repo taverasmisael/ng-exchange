@@ -6,18 +6,18 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { MaterialDesignModule } from "./material-design/material-design.module";
-import { MainNavigationComponent } from "./main-navigation/main-navigation.component";
 import { HistoricPageComponent } from "./views/historic-page/historic-page.component";
 import { LatestPageComponent } from "./views/latest-page/latest-page.component";
 import { ComparisonPageComponent } from "./views/comparison-page/comparison-page.component";
+import { MainNavComponent } from "./main-nav/main-nav.component";
 
 @NgModule({
   declarations: [
     AppComponent,
-    MainNavigationComponent,
     HistoricPageComponent,
     LatestPageComponent,
-    ComparisonPageComponent
+    ComparisonPageComponent,
+    MainNavComponent
   ],
   imports: [
     BrowserModule,

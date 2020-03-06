@@ -1,0 +1,51 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false"
+  >
+    <mat-toolbar>Menu</mat-toolbar>
+    <mat-nav-list>
+      <a
+        mat-button
+        routerLink="/"
+        routerLinkActive="mat-accent"
+        [routerLinkActiveOptions]="{ exact: true }"
+        >Latest rates</a
+      >
+      <a mat-button routerLink="/historic" routerLinkActive="mat-accent"
+        >Historic chart</a
+      >
+      <a mat-button routerLink="/comparison" routerLinkActive="mat-accent"
+        >Compare growth</a
+      >
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async"
+      >
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <h1>
+        <a routerLink="/" class="sitetitle">NgExchange</a>
+      </h1>
+      <div class="expander"></div>
+      <button mat-button [matMenuTriggerFor]="baseSelector">Base (USD)</button>
+      <mat-menu #baseSelector="matMenu">
+        <button mat-menu-item>USD</button>
+        <button mat-menu-item>EUR</button>
+        <button mat-menu-item>GBP</button>
+      </mat-menu>
+    </mat-toolbar>
+    <main class="main"><ng-content></ng-content></main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
