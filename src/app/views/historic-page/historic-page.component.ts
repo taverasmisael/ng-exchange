@@ -34,8 +34,8 @@ export class HistoricPageComponent implements OnInit {
       .pipe(
         map(params => {
           return {
-            base: params.get("base"),
-            secondary: params.get("symbol")
+            base: (params.get("base") || "EUR").toUpperCase(),
+            secondary: (params.get("symbol") || "USD,CAD,GBP").toUpperCase()
           };
         }),
         tap(currencies => (this.currencies = currencies)),

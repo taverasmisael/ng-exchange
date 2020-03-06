@@ -8,6 +8,7 @@ import { HistoricPageComponent } from "./views/historic-page/historic-page.compo
 const routes: Routes = [
   { path: "", component: LatestPageComponent },
   { path: "comparison", component: ComparisonPageComponent },
+  { path: "historic/:base", component: HistoricPageComponent },
   { path: "historic/:base/:symbol", component: HistoricPageComponent },
   { path: "**", redirectTo: "" }
 ];
