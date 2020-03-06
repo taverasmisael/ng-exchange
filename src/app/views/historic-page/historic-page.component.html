@@ -1,1 +1,24 @@
-<p>historic-page works!</p>
+<h1 class="displa-4">
+  <a
+    matTooltip="Go back to rates lists"
+    matTooltipPosition="above"
+    aria-label="Link to the table with all rates"
+    mat-icon-button
+    [routerLink]="['/']"
+    ><mat-icon>arrow_back</mat-icon></a
+  >
+  You're visualizing:
+  <strong>{{ currencies.base }} vs {{ currencies.secondary }}</strong>
+</h1>
+
+<canvas
+  baseChart
+  width="400"
+  height="400"
+  class="chart"
+  chartType="bar"
+  legend="true"
+  [datasets]="historicData"
+  [labels]="historicLabels"
+  [options]="chartOptions"
+></canvas>
