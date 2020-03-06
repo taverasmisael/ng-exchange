@@ -11,17 +11,21 @@
   <strong>{{ currencies.base }} vs {{ currencies.secondary }}</strong>
 </h1>
 
-<p *ngIf="requestStatus === 'LOADING'" class="mat-headline">Loading rates...</p>
-<p *ngIf="requestStatus === 'ERROR'" class="mat-headline">{{ errorMessage }}</p>
-<canvas
-  *ngIf="requestStatus === 'SUCCESS'"
-  baseChart
-  width="400"
-  height="400"
-  class="chart"
-  chartType="bar"
-  legend="true"
-  [datasets]="historicData"
-  [labels]="historicLabels"
-  [options]="chartOptions"
-></canvas>
+<div class="content">
+  <p *ngIf="requestStatus === 'LOADING'" class="mat-headline">
+    Loading rates...
+  </p>
+  <p *ngIf="requestStatus === 'ERROR'" class="mat-headline">
+    {{ errorMessage }}
+  </p>
+  <canvas
+    *ngIf="requestStatus === 'SUCCESS'"
+    baseChart
+    class="chart"
+    chartType="bar"
+    legend="true"
+    [datasets]="historicData"
+    [labels]="historicLabels"
+    [options]="chartOptions"
+  ></canvas>
+</div>
