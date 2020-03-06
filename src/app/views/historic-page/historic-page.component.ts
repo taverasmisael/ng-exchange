@@ -1,9 +1,12 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { map } from "rxjs/operators";
-import { ChartDataSets, ChartOptions } from "chart.js";
+import { map, switchMap, tap } from "rxjs/operators";
+import { ChartDataSets, ChartOptions, ChartData } from "chart.js";
 import { Label, BaseChartDirective } from "ng2-charts";
+import { ExchangeAPIService } from "src/app/services/exchange/exchange-api.service";
+import { toISODate, fromISODateTotoReadableDate } from "src/app/helpers/date";
+import { ExchangeHistoricRate } from "src/app/services/exchange/models/exchange-historic-rate";
 
 @Component({
   selector: "app-historic-page",
@@ -11,26 +14,18 @@ import { Label, BaseChartDirective } from "ng2-charts";
   styleUrls: ["./historic-page.component.scss"]
 })
 export class HistoricPageComponent implements OnInit {
-  currencies: { base: string; secondary: string } = { base: "", secondary: "" };
-  historicData: ChartDataSets[] = [
-    { data: [65, 59, 80, 81, 56, 55, 40], label: "Series A" },
-    { data: [28, 48, 40, 19, 86, 27, 90], label: "Series B" }
-  ];
-  historicLabels: Label[] = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July"
-  ];
+  currencies: Currencies = { base: "", secondary: "" };
+  historicData: ChartDataSets[] = [];
+  historicLabels: Label[] = [];
   chartOptions: ChartOptions = {
     responsive: true
   };
 
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private exchangeAPI: ExchangeAPIService
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap
@@ -40,10 +35,62 @@ export class HistoricPageComponent implements OnInit {
             base: params.get("base"),
             secondary: params.get("symbol")
           };
-        })
+        }),
+        tap(currencies => (this.currencies = currencies)),
+        switchMap(this.getRatesFromAPI),
+        map(this.prepareRatesForChart)
       )
-      .subscribe(currencies => {
-        this.currencies = currencies;
+      .subscribe(chartData => {
+        this.historicData = chartData.datasets;
+        this.historicLabels = chartData.labels;
       });
   }
+
+  private getRatesFromAPI = (currencies: Currencies) => {
+    const today = toISODate(new Date());
+    return this.exchangeAPI.getLastMonth(today, currencies.base, [
+      currencies.secondary
+    ]);
+  };
+
+  private prepareRatesForChart(rates: ExchangeHistoricRate): RateChartData {
+    const rawDatasets = Object.keys(rates)
+      .sort()
+      .reduce(
+        (prev, key) => {
+          const dataset = Object.keys(rates[key]).reduce(
+            (prevDataset, symbol) => {
+              const accValues = prev.dataset[symbol] || [];
+              const newValues = accValues.concat(rates[key][symbol] || 0);
+              return { ...prevDataset, [symbol]: newValues };
+            },
+            {}
+          );
+          const response = {
+            dataset,
+            labels: [...prev.labels, fromISODateTotoReadableDate(key)]
+          };
+          return response;
+        },
+        { labels: [], dataset: {} }
+      );
+
+    return {
+      labels: rawDatasets.labels,
+      datasets: Object.keys(rawDatasets.dataset).map(label => ({
+        label,
+        data: rawDatasets.dataset[label]
+      }))
+    };
+  }
+}
+
+interface Currencies {
+  base: string;
+  secondary: string;
+}
+
+interface RateChartData {
+  labels: Label[];
+  datasets: ChartDataSets[];
 }
