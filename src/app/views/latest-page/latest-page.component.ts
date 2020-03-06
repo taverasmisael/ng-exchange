@@ -36,7 +36,6 @@ export class LatestPageComponent implements OnInit, OnDestroy {
       .getLastDays(today)
       .pipe(map(this.mapRatesToTable))
       .subscribe((rates: MappedRates[]) => {
-        console.log(this.sort);
         this.requestStatus = RequestStatus.SUCCESS;
         this.rates = new MatTableDataSource(rates);
         this.rates.paginator = this.paginator;
@@ -59,7 +58,7 @@ export class LatestPageComponent implements OnInit, OnDestroy {
     }));
   }
 
-  private handleAPIError = (e: any) => {
+  private handleAPIError = () => {
     this.errorMessage =
       "There was an error querying the latests rates. Please try later.";
     this.requestStatus = RequestStatus.ERROR;

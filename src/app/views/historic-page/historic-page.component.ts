@@ -1,12 +1,13 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
 import { map, switchMap, tap } from "rxjs/operators";
-import { ChartDataSets, ChartOptions, ChartData } from "chart.js";
-import { Label, BaseChartDirective } from "ng2-charts";
+import { ChartDataSets, ChartOptions } from "chart.js";
+import { Label } from "ng2-charts";
 import { ExchangeAPIService } from "src/app/services/exchange/exchange-api.service";
 import { toISODate, fromISODateTotoReadableDate } from "src/app/helpers/date";
 import { ExchangeHistoricRate } from "src/app/services/exchange/models/exchange-historic-rate";
+import { RequestStatus } from "src/app/models/request-status.enum";
 
 @Component({
   selector: "app-historic-page",
@@ -14,14 +15,15 @@ import { ExchangeHistoricRate } from "src/app/services/exchange/models/exchange-
   styleUrls: ["./historic-page.component.scss"]
 })
 export class HistoricPageComponent implements OnInit {
-  currencies: Currencies = { base: "", secondary: "" };
   historicData: ChartDataSets[] = [];
   historicLabels: Label[] = [];
-  chartOptions: ChartOptions = {
-    responsive: true
-  };
+  chartOptions: ChartOptions = { responsive: true };
 
-  @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
+  today = toISODate(new Date());
+  currencies: Currencies = { base: "", secondary: "" };
+  requestStatus: RequestStatus = RequestStatus.LOADING;
+  errorMessage: string;
+
   constructor(
     private route: ActivatedRoute,
     private exchangeAPI: ExchangeAPIService
@@ -41,17 +43,16 @@ export class HistoricPageComponent implements OnInit {
         map(this.prepareRatesForChart)
       )
       .subscribe(chartData => {
+        this.requestStatus = RequestStatus.SUCCESS;
         this.historicData = chartData.datasets;
         this.historicLabels = chartData.labels;
-      });
+      }, this.handleAPIError);
   }
 
-  private getRatesFromAPI = (currencies: Currencies) => {
-    const today = toISODate(new Date());
-    return this.exchangeAPI.getLastMonth(today, currencies.base, [
+  private getRatesFromAPI = (currencies: Currencies) =>
+    this.exchangeAPI.getLastMonth(this.today, currencies.base, [
       currencies.secondary
     ]);
-  };
 
   private prepareRatesForChart(rates: ExchangeHistoricRate): RateChartData {
     const rawDatasets = Object.keys(rates)
@@ -83,6 +84,12 @@ export class HistoricPageComponent implements OnInit {
       }))
     };
   }
+
+  private handleAPIError = () => {
+    this.errorMessage =
+      "There was an error querying the historic rates. Please try later.";
+    this.requestStatus = RequestStatus.ERROR;
+  };
 }
 
 interface Currencies {
