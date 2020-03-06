@@ -8,7 +8,11 @@
       <!-- Position Column -->
       <ng-container matColumnDef="fluctuation">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Position</th>
-        <td mat-cell *matCellDef="let rate">{{ rate.fluctuation }}</td>
+        <td mat-cell *matCellDef="let rate">
+          <app-fluctuation-icon
+            [fluctuation]="rate.fluctuation"
+          ></app-fluctuation-icon>
+        </td>
       </ng-container>
 
       <!-- Name Column -->

@@ -10,6 +10,7 @@ import { HistoricPageComponent } from "./views/historic-page/historic-page.compo
 import { LatestPageComponent } from "./views/latest-page/latest-page.component";
 import { ComparisonPageComponent } from "./views/comparison-page/comparison-page.component";
 import { MainNavComponent } from "./main-nav/main-nav.component";
+import { FluctuationIconComponent } from './components/fluctuation-icon/fluctuation-icon.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { MainNavComponent } from "./main-nav/main-nav.component";
     HistoricPageComponent,
     LatestPageComponent,
     ComparisonPageComponent,
-    MainNavComponent
+    MainNavComponent,
+    FluctuationIconComponent
   ],
   imports: [
     BrowserModule,
