@@ -42,11 +42,13 @@
         <a routerLink="/" class="sitetitle">NgExchange</a>
       </h1>
       <div class="expander"></div>
-      <button mat-button [matMenuTriggerFor]="baseSelector">Base (USD)</button>
+      <button mat-button [matMenuTriggerFor]="baseSelector">
+        Base ({{ currentCurrency$ | async }})
+      </button>
       <mat-menu #baseSelector="matMenu">
-        <button mat-menu-item>USD</button>
-        <button mat-menu-item>EUR</button>
-        <button mat-menu-item>GBP</button>
+        <button (click)="setBaseCurrency('USD')" mat-menu-item>USD</button>
+        <button (click)="setBaseCurrency('EUR')" mat-menu-item>EUR</button>
+        <button (click)="setBaseCurrency('GBP')" mat-menu-item>GBP</button>
       </mat-menu>
     </mat-toolbar>
     <main class="main"><ng-content></ng-content></main>
