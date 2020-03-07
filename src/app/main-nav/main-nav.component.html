@@ -11,12 +11,15 @@
     <mat-nav-list>
       <a
         mat-button
-        routerLink="/"
+        routerLink="/latest"
         routerLinkActive="mat-accent"
         [routerLinkActiveOptions]="{ exact: true }"
         >Latest rates</a
       >
-      <a mat-button routerLink="/historic" routerLinkActive="mat-accent"
+      <a
+        mat-button
+        [routerLink]="['historic', 'EUR']"
+        routerLinkActive="mat-accent"
         >Historic chart</a
       >
       <a mat-button routerLink="/comparison" routerLinkActive="mat-accent"
