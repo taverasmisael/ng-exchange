@@ -8,6 +8,8 @@ import { ExchangeAPIService } from "src/app/services/exchange/exchange-api.servi
 import { toISODate, fromISODateTotoReadableDate } from "src/app/helpers/date";
 import { ExchangeHistoricRate } from "src/app/services/exchange/models/exchange-historic-rate";
 import { RequestStatus } from "src/app/models/request-status.enum";
+import { BaseCurrencyService } from "src/app/services/currency/base-currency.service";
+import toUpperCase from "ramda/es/toUpper";
 
 @Component({
   selector: "app-historic-page",
@@ -18,7 +20,6 @@ export class HistoricPageComponent implements OnInit {
   historicData: ChartDataSets[] = [];
   historicLabels: Label[] = [];
   chartOptions: ChartOptions = { responsive: true };
-
   today = toISODate(new Date());
   currencies: Currencies = { base: "", secondary: "" };
   requestStatus: RequestStatus = RequestStatus.LOADING;
@@ -26,18 +27,13 @@ export class HistoricPageComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private exchangeAPI: ExchangeAPIService
+    private exchangeAPI: ExchangeAPIService,
+    private baseCurrency: BaseCurrencyService
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap
+    this.getCurrencies()
       .pipe(
-        map(params => {
-          return {
-            base: (params.get("base") || "EUR").toUpperCase(),
-            secondary: (params.get("symbol") || "USD,CAD,GBP").toUpperCase()
-          };
-        }),
         tap(currencies => (this.currencies = currencies)),
         switchMap(this.getRatesFromAPI),
         map(this.prepareRatesForChart)
@@ -49,21 +45,32 @@ export class HistoricPageComponent implements OnInit {
       }, this.handleAPIError);
   }
 
+  private getCurrencies = () =>
+    this.baseCurrency.currentCurrency.pipe(switchMap(this.mapRouteParams));
+
+  private mapRouteParams = (base: string) => {
+    return this.route.paramMap.pipe(
+      map(params => ({
+        base,
+        secondary: toUpperCase(params.get("secondary") || "")
+      }))
+    );
+  };
+
   private getRatesFromAPI = (currencies: Currencies) =>
     this.exchangeAPI.getLastMonth(this.today, currencies.base, [
       currencies.secondary
     ]);
-
   private prepareRatesForChart(rates: ExchangeHistoricRate): RateChartData {
     const rawDatasets = Object.keys(rates)
       .sort()
       .reduce(
         (prev, key) => {
           const dataset = Object.keys(rates[key]).reduce(
-            (prevDataset, symbol) => {
-              const accValues = prev.dataset[symbol] || [];
-              const newValues = accValues.concat(rates[key][symbol] || 0);
-              return { ...prevDataset, [symbol]: newValues };
+            (prevDataset, secondary) => {
+              const accValues = prev.dataset[secondary] || [];
+              const newValues = accValues.concat(rates[key][secondary] || 0);
+              return { ...prevDataset, [secondary]: newValues };
             },
             {}
           );
@@ -85,7 +92,8 @@ export class HistoricPageComponent implements OnInit {
     };
   }
 
-  private handleAPIError = () => {
+  private handleAPIError = (e: any) => {
+    console.error(e);
     this.errorMessage =
       "There was an error querying the historic rates. Please try later.";
     this.requestStatus = RequestStatus.ERROR;
