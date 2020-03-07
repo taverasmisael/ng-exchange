@@ -25,7 +25,6 @@ export class LatestPageComponent implements OnInit, OnDestroy {
   rates: MatTableDataSource<RateFluctuationEntry>;
   errorMessage: string;
   requestStatus: RequestStatus = RequestStatus.LOADING;
-  currentCurrency$ = this.baseCurrency.currentCurrency;
   displayedColumns = ["fluctuation", "symbol", "spot", "chart"];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;

@@ -18,8 +18,9 @@
       >
       <a
         mat-button
-        [routerLink]="['historic', 'EUR']"
+        routerLink="/historic/"
         routerLinkActive="mat-accent"
+        [routerLinkActiveOptions]="{ exact: false }"
         >Historic chart</a
       >
       <a mat-button routerLink="/comparison" routerLinkActive="mat-accent"

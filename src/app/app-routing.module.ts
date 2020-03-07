@@ -10,8 +10,8 @@ const routes: Routes = [
   { path: "", component: HomePageComponent },
   { path: "latest", component: LatestPageComponent },
   { path: "comparison", component: ComparisonPageComponent },
-  { path: "historic/:base", component: HistoricPageComponent },
-  { path: "historic/:base/:symbol", component: HistoricPageComponent },
+  { path: "historic", component: HistoricPageComponent },
+  { path: "historic/:secondary", component: HistoricPageComponent },
   { path: "**", redirectTo: "" }
 ];
 
