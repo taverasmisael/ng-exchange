@@ -11,9 +11,9 @@ import { MaterialDesignModule } from "./material-design/material-design.module";
 import { HistoricPageComponent } from "./views/historic-page/historic-page.component";
 import { LatestPageComponent } from "./views/latest-page/latest-page.component";
 import { ComparisonPageComponent } from "./views/comparison-page/comparison-page.component";
-import { MainNavComponent } from "./main-nav/main-nav.component";
+import { MainNavComponent } from "./components/main-nav/main-nav.component";
 import { FluctuationIconComponent } from "./components/fluctuation-icon/fluctuation-icon.component";
-import { HomePageComponent } from './views/home-page/home-page.component';
+import { HomePageComponent } from "./views/home-page/home-page.component";
 
 @NgModule({
   declarations: [
