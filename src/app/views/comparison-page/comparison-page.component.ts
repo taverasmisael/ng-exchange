@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChildren,
+  OnDestroy,
+  QueryList
+} from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
 
 import { Subscription } from "rxjs";
@@ -8,9 +14,7 @@ import { take, takeLast } from "ramda";
 import { toISODate } from "src/app/helpers/date";
 import { ExchangeAPIService } from "src/app/services/exchange/exchange-api.service";
 import { ExchangeLatestRates } from "src/app/services/exchange/models/exchange-latest-rates";
-import { RateFluctuationEntry } from "src/app/models/rate-fluctuation-entry";
 import { calculateFluctuation } from "src/app/helpers/fluctuation";
-import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { RequestStatus } from "src/app/models/request-status.enum";
 import { RateFluctuation } from "src/app/models/rate-fluctuation.enum";
@@ -21,15 +25,16 @@ import { toFixedNumber } from "src/app/helpers/numbers";
   templateUrl: "./comparison-page.component.html",
   styleUrls: ["./comparison-page.component.scss"]
 })
-export class ComparisonPageComponent implements OnInit {
+export class ComparisonPageComponent implements OnInit, OnDestroy {
   private lastRates$: Subscription;
-  private rates: MappedRates;
-  currentRates: MatTableDataSource<MappedRate>;
+  increaseFluctuation = RateFluctuation.UP;
+  decreaseFluctuation = RateFluctuation.DOWN;
+  increaseRates: MatTableDataSource<MappedRate>;
+  decreaseRates: MatTableDataSource<MappedRate>;
   errorMessage: string;
   requestStatus: RequestStatus = RequestStatus.LOADING;
-  displayedColumns = ["fluctuation", "symbol", "percentage", "difference"];
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  displayedColumns = ["symbol", "percentage", "difference"];
+  @ViewChildren(MatSort) sort: QueryList<MatSort>;
 
   constructor(private exchangeService: ExchangeAPIService) {}
 
@@ -40,10 +45,10 @@ export class ComparisonPageComponent implements OnInit {
       .pipe(map(this.mapRatesToTable))
       .subscribe((rates: MappedRates) => {
         this.requestStatus = RequestStatus.SUCCESS;
-        this.rates = rates;
-        this.currentRates = new MatTableDataSource(rates.increase);
-        this.currentRates.paginator = this.paginator;
-        this.currentRates.sort = this.sort;
+        this.increaseRates = new MatTableDataSource(rates.increase);
+        this.increaseRates.sort = this.sort.first;
+        this.decreaseRates = new MatTableDataSource(rates.decrease);
+        this.decreaseRates.sort = this.sort.last;
       }, this.handleAPIError);
   }
 
@@ -73,7 +78,6 @@ export class ComparisonPageComponent implements OnInit {
 
     const increase = take(5, mappedRates);
     const decrease = takeLast(5, mappedRates);
-    console.warn(increase);
     return { increase, decrease };
   }
 
