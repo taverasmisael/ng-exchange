@@ -3,8 +3,7 @@ import { RateFluctuation } from "src/app/models/rate-fluctuation.enum";
 
 @Component({
   selector: "app-fluctuation-icon",
-  templateUrl: "./fluctuation-icon.component.html",
-  styleUrls: ["./fluctuation-icon.component.scss"]
+  templateUrl: "./fluctuation-icon.component.html"
 })
 export class FluctuationIconComponent implements OnInit {
   @Input() fluctuation: RateFluctuation;

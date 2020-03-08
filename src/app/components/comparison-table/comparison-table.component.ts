@@ -16,8 +16,7 @@ import { MappedComparisonRate } from "src/app/models/mapped-comparison-rate";
 
 @Component({
   selector: "app-comparison-table",
-  templateUrl: "./comparison-table.component.html",
-  styleUrls: ["./comparison-table.component.scss"]
+  templateUrl: "./comparison-table.component.html"
 })
 export class ComparisonTableComponent implements OnInit, OnChanges {
   @Input() data: MappedComparisonRate[];

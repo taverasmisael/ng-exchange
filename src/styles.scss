@@ -9,6 +9,11 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+.container {
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
 .text-center,
 .mat-header-cell.text-center {
   text-align: center;
