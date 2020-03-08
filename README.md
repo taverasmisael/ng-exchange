@@ -20,12 +20,12 @@ I didn't use any state manager because it's a small application, and the only sh
 
 ## Screenshots
 
-![Home Desktop](./home-screenshot-1366x1024.png)
-![Home Tablet](./home-screenshot-1024-768.png)
-![Home Tablet Horz](./home-screenshot-768-1024.png)
-![Home Mobile](./home-screenshot-iphonex.png)
-![Latest Page](./latest-screenshot.png)
-![Historic all currencies](./historic-empty-screenshot.png)
-![Historic selected currencies](./historic-filled-screenshot.png)
-![Compare increase](./compare-increase-screenshot.png)
-![Compare decrease](./compare-decrease-screenshot.png)
+![Home Desktop](./docs/assets/home-screenshot-1366x1024.png)
+![Home Tablet](./docs/assets/home-screenshot-1024-768.png)
+![Home Tablet Horz](./docs/assets/home-screenshot-768-1024.png)
+![Home Mobile](./docs/assets/home-screenshot-iphonex.png)
+![Latest Page](./docs/assets/latest-screenshot.png)
+![Historic all currencies](./docs/assets/historic-empty-screenshot.png)
+![Historic selected currencies](./docs/assets/historic-filled-screenshot.png)
+![Compare increase](./docs/assets/compare-increase-screenshot.png)
+![Compare decrease](./docs/assets/compare-decrease-screenshot.png)
