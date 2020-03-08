@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ViewChildren,
-  OnDestroy,
-  QueryList
-} from "@angular/core";
-import { MatTableDataSource } from "@angular/material/table";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 
 import { Subscription } from "rxjs";
 import { map } from "rxjs/operators";
@@ -15,10 +8,10 @@ import { toISODate } from "src/app/helpers/date";
 import { ExchangeAPIService } from "src/app/services/exchange/exchange-api.service";
 import { ExchangeLatestRates } from "src/app/services/exchange/models/exchange-latest-rates";
 import { calculateFluctuation } from "src/app/helpers/fluctuation";
-import { MatSort } from "@angular/material/sort";
 import { RequestStatus } from "src/app/models/request-status.enum";
 import { RateFluctuation } from "src/app/models/rate-fluctuation.enum";
 import { toFixedNumber } from "src/app/helpers/numbers";
+import { MappedComparisonRate } from "src/app/models/mapped-comparison-rate";
 
 @Component({
   selector: "app-comparison-page",
@@ -29,12 +22,12 @@ export class ComparisonPageComponent implements OnInit, OnDestroy {
   private lastRates$: Subscription;
   increaseFluctuation = RateFluctuation.UP;
   decreaseFluctuation = RateFluctuation.DOWN;
-  increaseRates: MatTableDataSource<MappedRate>;
-  decreaseRates: MatTableDataSource<MappedRate>;
+  ratesData: {
+    increase: MappedComparisonRate[];
+    decrease: MappedComparisonRate[];
+  } = { increase: [], decrease: [] };
   errorMessage: string;
   requestStatus: RequestStatus = RequestStatus.LOADING;
-  displayedColumns = ["symbol", "percentage", "difference"];
-  @ViewChildren(MatSort) sort: QueryList<MatSort>;
 
   constructor(private exchangeService: ExchangeAPIService) {}
 
@@ -44,11 +37,8 @@ export class ComparisonPageComponent implements OnInit, OnDestroy {
       .getLastDays(today)
       .pipe(map(this.mapRatesToTable))
       .subscribe((rates: MappedRates) => {
+        this.ratesData = rates;
         this.requestStatus = RequestStatus.SUCCESS;
-        this.increaseRates = new MatTableDataSource(rates.increase);
-        this.increaseRates.sort = this.sort.first;
-        this.decreaseRates = new MatTableDataSource(rates.decrease);
-        this.decreaseRates.sort = this.sort.last;
       }, this.handleAPIError);
   }
 
@@ -89,13 +79,6 @@ export class ComparisonPageComponent implements OnInit, OnDestroy {
 }
 
 interface MappedRates {
-  increase: MappedRate[];
-  decrease: MappedRate[];
-}
-
-interface MappedRate {
-  symbol: string;
-  difference: number;
-  percentage: number;
-  fluctuation: RateFluctuation;
+  increase: MappedComparisonRate[];
+  decrease: MappedComparisonRate[];
 }
