@@ -1,7 +1,7 @@
 <div class="container">
   <h1 class="mat-display-1">Latest rates</h1>
-  <div class="content" [hidden]="requestStatus !== 'SUCCESS'">
-    <table matSort mat-table [dataSource]="rates" class="mat-elevation-z4">
+  <div class="content mat-elevation-z4" [hidden]="requestStatus !== 'SUCCESS'">
+    <table matSort mat-table [dataSource]="rates">
       <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
 
