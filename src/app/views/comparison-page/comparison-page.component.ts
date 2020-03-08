@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 
 import { Subscription } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, switchMap } from "rxjs/operators";
 import { take, takeLast } from "ramda";
 
 import { toISODate } from "src/app/helpers/date";
@@ -12,6 +12,7 @@ import { RequestStatus } from "src/app/models/request-status.enum";
 import { RateFluctuation } from "src/app/models/rate-fluctuation.enum";
 import { toFixedNumber } from "src/app/helpers/numbers";
 import { MappedComparisonRate } from "src/app/models/mapped-comparison-rate";
+import { BaseCurrencyService } from "src/app/services/currency/base-currency.service";
 
 @Component({
   selector: "app-comparison-page",
@@ -29,22 +30,32 @@ export class ComparisonPageComponent implements OnInit, OnDestroy {
   errorMessage: string;
   requestStatus: RequestStatus = RequestStatus.LOADING;
 
-  constructor(private exchangeService: ExchangeAPIService) {}
+  constructor(
+    private exchangeService: ExchangeAPIService,
+    private baseCurrency: BaseCurrencyService
+  ) {}
 
   ngOnInit(): void {
-    const today = toISODate(new Date());
-    this.lastRates$ = this.exchangeService
-      .getLastDays(today)
-      .pipe(map(this.mapRatesToTable))
-      .subscribe((rates: MappedRates) => {
-        this.ratesData = rates;
-        this.requestStatus = RequestStatus.SUCCESS;
-      }, this.handleAPIError);
+    this.lastRates$ = this.getExchangeData().subscribe((rates: MappedRates) => {
+      this.ratesData = rates;
+      this.requestStatus = RequestStatus.SUCCESS;
+    }, this.handleAPIError);
   }
 
   ngOnDestroy(): void {
     this.lastRates$.unsubscribe();
   }
+
+  private getExchangeData = () => {
+    const today = toISODate(new Date());
+    return this.baseCurrency.currentCurrency.pipe(
+      switchMap(base => {
+        this.requestStatus = RequestStatus.LOADING;
+        return this.exchangeService.getLastDays(today, base);
+      }),
+      map(this.mapRatesToTable)
+    );
+  };
 
   private mapRatesToTable(rates: ExchangeLatestRates): MappedRates {
     const mappedRates = Object.keys(rates.today)
