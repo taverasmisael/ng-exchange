@@ -22,12 +22,12 @@ export class FluctuationIconComponent implements OnInit {
   get fluctuationColor() {
     switch (this.fluctuation) {
       case RateFluctuation.DOWN:
-        return "#f8bbd0";
+        return "#d32f2f";
       case RateFluctuation.UP:
         return "#4caf50";
       case RateFluctuation.SAME:
       default:
-        return "#ffffff";
+        return "#333";
     }
   }
 

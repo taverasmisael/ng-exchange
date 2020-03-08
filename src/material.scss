@@ -1,0 +1,15 @@
+@import "~@angular/material/theming";
+
+@include mat-core();
+
+$ng-exchange-primary: mat-palette($mat-deep-purple);
+$ng-exchange-accent: mat-palette($mat-green);
+$ng-exchange-warn: mat-palette($mat-red);
+
+$ng-exchange-theme: mat-light-theme(
+  $ng-exchange-primary,
+  $ng-exchange-accent,
+  $ng-exchange-warn
+);
+
+@include angular-material-theme($ng-exchange-theme);
