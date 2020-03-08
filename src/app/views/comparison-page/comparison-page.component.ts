@@ -2,17 +2,24 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 
 import { Subscription } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
-import { take, takeLast } from "ramda";
 
 import { toISODate } from "src/app/helpers/date";
 import { ExchangeAPIService } from "src/app/services/exchange/exchange-api.service";
 import { ExchangeLatestRates } from "src/app/services/exchange/models/exchange-latest-rates";
-import { calculateFluctuation } from "src/app/helpers/fluctuation";
+import {
+  calculateFluctuation,
+  groupByFluctuation,
+  takeLastBy,
+  takeBy
+} from "src/app/helpers/fluctuation";
 import { RequestStatus } from "src/app/models/request-status.enum";
 import { RateFluctuation } from "src/app/models/rate-fluctuation.enum";
 import { toFixedNumber } from "src/app/helpers/numbers";
 import { MappedComparisonRate } from "src/app/models/mapped-comparison-rate";
 import { BaseCurrencyService } from "src/app/services/currency/base-currency.service";
+
+const takeTopFive = takeLastBy("difference", 5);
+const takeBottomFive = takeBy("difference", 5);
 
 @Component({
   selector: "app-comparison-page",
@@ -58,31 +65,30 @@ export class ComparisonPageComponent implements OnInit, OnDestroy {
   };
 
   private mapRatesToTable(rates: ExchangeLatestRates): MappedRates {
-    const mappedRates = Object.keys(rates.today)
-      .map(symbol => {
-        const yesterday = rates.yesterday[symbol] || 0;
-        const today = rates.today[symbol] || 0;
+    const mappedRates = Object.keys(rates.today).map(symbol => {
+      const yesterday = rates.yesterday[symbol] || 0;
+      const today = rates.today[symbol] || 0;
 
-        const difference = toFixedNumber(4, today - yesterday);
+      const difference = toFixedNumber(4, today - yesterday);
 
-        return {
-          symbol,
-          difference,
-          percentage: toFixedNumber(4, difference / yesterday),
-          fluctuation: calculateFluctuation(yesterday, today)
-        };
-      })
-      // Sort by fluctuation with the twist that rates with fluctiation=== SAME are considered as negative
-      .sort((_, b) =>
-        b.fluctuation === RateFluctuation.SAME ? -1 : b.fluctuation
-      );
+      return {
+        symbol,
+        difference,
+        percentage: toFixedNumber(4, difference / yesterday),
+        fluctuation: calculateFluctuation(yesterday, today)
+      };
+    });
 
-    const increase = take(5, mappedRates);
-    const decrease = takeLast(5, mappedRates);
+    const groupedRates = groupByFluctuation(mappedRates);
+
+    const increase: MappedComparisonRate[] = takeTopFive(groupedRates.INCREASE);
+    const decrease = takeBottomFive(
+      groupedRates.DECREASE
+    ) as MappedComparisonRate[];
     return { increase, decrease };
   }
 
-  private handleAPIError = () => {
+  private handleAPIError = (e: any) => {
     this.errorMessage =
       "There was an error querying the latests rates. Please try later.";
     this.requestStatus = RequestStatus.ERROR;
