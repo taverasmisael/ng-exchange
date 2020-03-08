@@ -1,1 +1,40 @@
-Welcome screen
+<div class="container">
+  <div>
+    <h1 class="display-2">Welcome to NgExchange</h1>
+    <p class="headline">
+      In this page you can see various information about currencies around the
+      globe. Select a base currency for the top right menu
+    </p>
+  </div>
+  <div class="links-container">
+    <a
+      class="link mat-elevation-z3"
+      routerLink="/latest"
+      routerLinkActive="router-link-active"
+    >
+      <mat-icon class="icon">data_usage</mat-icon>
+      <h2 class="title display-4">Latest</h2>
+      <p class="body-1">
+        The latest data from all the currencies in the platform
+      </p>
+    </a>
+    <a
+      class="link mat-elevation-z3"
+      routerLink="'/historic/"
+      routerLinkActive="router-link-active"
+    >
+      <mat-icon class="icon">compare_arrows</mat-icon>
+      <h2 class="title display-4">Compare</h2>
+      <p class="body-1">Take the base currency against other currencies</p>
+    </a>
+    <a
+      class="link mat-elevation-z3"
+      routerLink="/comparison"
+      routerLinkActive="router-link-active"
+    >
+      <mat-icon class="icon">history</mat-icon>
+      <h2 class="title display-4">Historic</h2>
+      <p class="body-1">See the top fluctuations on currencies</p>
+    </a>
+  </div>
+</div>

@@ -14,7 +14,7 @@ import { ComparisonPageComponent } from "./views/comparison-page/comparison-page
 import { MainNavComponent } from "./components/main-nav/main-nav.component";
 import { FluctuationIconComponent } from "./components/fluctuation-icon/fluctuation-icon.component";
 import { HomePageComponent } from "./views/home-page/home-page.component";
-import { ComparisonTableComponent } from './components/comparison-table/comparison-table.component';
+import { ComparisonTableComponent } from "./components/comparison-table/comparison-table.component";
 
 @NgModule({
   declarations: [
