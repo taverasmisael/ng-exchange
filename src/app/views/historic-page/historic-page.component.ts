@@ -31,7 +31,7 @@ export class HistoricPageComponent implements OnInit {
     private baseCurrency: BaseCurrencyService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.getCurrencies()
       .pipe(
         tap(currencies => (this.currencies = currencies)),

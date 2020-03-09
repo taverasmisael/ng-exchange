@@ -34,13 +34,13 @@ export class LatestPageComponent implements OnInit, OnDestroy {
     private baseCurrency: BaseCurrencyService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.lastRates$ = this.baseCurrency.currentCurrency
       .pipe(switchMap(base => this.getExchangeData(base)))
       .subscribe(this.updateDataSource, this.handleAPIError);
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.lastRates$.unsubscribe();
   }
 

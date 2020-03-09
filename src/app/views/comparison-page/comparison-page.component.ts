@@ -42,14 +42,14 @@ export class ComparisonPageComponent implements OnInit, OnDestroy {
     private baseCurrency: BaseCurrencyService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.lastRates$ = this.getExchangeData().subscribe((rates: MappedRates) => {
       this.ratesData = rates;
       this.requestStatus = RequestStatus.SUCCESS;
     }, this.handleAPIError);
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.lastRates$.unsubscribe();
   }
 

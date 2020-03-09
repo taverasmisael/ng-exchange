@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { RateFluctuation } from "src/app/models/rate-fluctuation.enum";
 
 @Component({
@@ -7,29 +7,33 @@ import { RateFluctuation } from "src/app/models/rate-fluctuation.enum";
 })
 export class FluctuationIconComponent {
   @Input() fluctuation: RateFluctuation;
+  private readonly FLUCTUATION_ICONS: RateFluctuationMap = {
+    [RateFluctuation.UP]: "trending_up",
+    [RateFluctuation.SAME]: "trending_flat",
+    [RateFluctuation.DOWN]: "trending_down"
+  };
+
+  private readonly FLUCTUATION_COLORS: RateFluctuationMap = {
+    [RateFluctuation.UP]: "#4caf50",
+    [RateFluctuation.SAME]: "#333",
+    [RateFluctuation.DOWN]: "#d32f2f"
+  };
 
   get fluctuationIcon() {
-    switch (this.fluctuation) {
-      case RateFluctuation.DOWN:
-        return "trending_down";
-      case RateFluctuation.UP:
-        return "trending_up";
-      case RateFluctuation.SAME:
-      default:
-        return "trending_flat";
-    }
+    return this.FLUCTUATION_ICONS[this.fluctuation || RateFluctuation.SAME];
   }
   get fluctuationColor() {
-    switch (this.fluctuation) {
-      case RateFluctuation.DOWN:
-        return "#d32f2f";
-      case RateFluctuation.UP:
-        return "#4caf50";
-      case RateFluctuation.SAME:
-      default:
-        return "#333";
-    }
+    return this.FLUCTUATION_COLORS[this.fluctuation || RateFluctuation.SAME];
   }
 
   constructor() {}
 }
+
+type RateFluctuationMap = {
+  [key in RateFluctuation]: string;
+};
+
+type GetFromValueFromMap = (
+  map: RateFluctuationMap,
+  fluctuation?: RateFluctuation
+) => string;
