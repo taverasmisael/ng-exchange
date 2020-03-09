@@ -18,15 +18,13 @@ import { MappedComparisonRate } from "src/app/models/mapped-comparison-rate";
   selector: "app-comparison-table",
   templateUrl: "./comparison-table.component.html"
 })
-export class ComparisonTableComponent implements OnInit, OnChanges {
+export class ComparisonTableComponent implements OnChanges {
   @Input() data: MappedComparisonRate[];
   @ViewChild(MatSort) sort: MatSort;
   dataSource: MatTableDataSource<MappedComparisonRate>;
   displayedColumns = ["symbol", "percentage", "difference"];
 
   constructor() {}
-
-  ngOnInit(): void {}
 
   ngOnChanges(changes: ComparisonTableChanges) {
     const { data } = changes;

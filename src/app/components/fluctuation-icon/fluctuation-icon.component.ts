@@ -5,7 +5,7 @@ import { RateFluctuation } from "src/app/models/rate-fluctuation.enum";
   selector: "app-fluctuation-icon",
   templateUrl: "./fluctuation-icon.component.html"
 })
-export class FluctuationIconComponent implements OnInit {
+export class FluctuationIconComponent {
   @Input() fluctuation: RateFluctuation;
 
   get fluctuationIcon() {
@@ -32,6 +32,4 @@ export class FluctuationIconComponent implements OnInit {
   }
 
   constructor() {}
-
-  ngOnInit(): void {}
 }
